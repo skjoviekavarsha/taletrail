@@ -54,16 +54,16 @@ def recommend_by_genre(genre):
     return subset.sample(min(5, len(subset)), random_state=42)
 
 # --------------------------------------------------
-# 💬 Chatbot Logic
+# 💬 Chatbot Logic (TaleGuide)
 # --------------------------------------------------
 def chatbot_reply(query):
     query = query.lower()
 
     if any(g in query for g in ["hi", "hello", "hey"]):
         return random.choice([
-            "👋 Hey there! I’m BookBot — your reading companion!",
-            "Hello! Tell me what kind of books you enjoy 📚",
-            "Hi reader! Looking for recommendations?"
+            "👋 Hey there! I’m TaleGuide — your reading companion!",
+            "Hello! I’m TaleGuide. Tell me what kind of books you enjoy 📚",
+            "Hi reader! TaleGuide here — ready to recommend some books?"
         ])
 
     result = df[
@@ -73,19 +73,19 @@ def chatbot_reply(query):
     ]
 
     if not result.empty:
-        response = "📚 **Here are some matches:**\n\n"
+        response = "📚 **Here are some matches I found:**\n\n"
         for _, r in result.head(3).iterrows():
             response += f"⭐ **{r.Title}** by {r.Author} ({r.Genre}, {r.Year})\n\n"
         return response
 
     if "recommend" in query or "suggest" in query:
         recs = df.sample(3)
-        response = "✨ **You might enjoy:**\n\n"
+        response = "✨ **Here are some recommendations from TaleGuide:**\n\n"
         for _, r in recs.iterrows():
             response += f"📖 **{r.Title}** by {r.Author} ({r.Genre})\n\n"
         return response
 
-    return "🤖 Try asking: *Recommend fantasy books* or *Books by Colleen Hoover*"
+    return "🤖 I’m TaleGuide! Try asking: *Recommend fantasy books* or *Books by Colleen Hoover*"
 
 # --------------------------------------------------
 # 🧭 MAIN INTERFACE
@@ -126,20 +126,21 @@ if "chat_messages" not in st.session_state:
     st.session_state.chat_messages = []
 
 with st.sidebar:
-    if st.button("💬 Chat with BookBot"):
+    if st.button("💬 Chat with TaleGuide"):
         st.session_state.chat_open = not st.session_state.chat_open
 
 # --------------------------------------------------
-# 🤖 CHAT WINDOW (FIX 2 APPLIED)
+# 🤖 CHAT WINDOW (FIX 2 – INSTANT VISIBILITY)
 # --------------------------------------------------
 if st.session_state.chat_open:
     st.markdown("---")
-    st.subheader("🤖 BookBot – Your Reading Assistant")
+    st.subheader("🤖 TaleGuide – Your Reading Assistant")
 
     for msg in st.session_state.chat_messages:
-        st.markdown(f"**{msg['role'].capitalize()}:** {msg['content']}")
+        name = "TaleGuide" if msg["role"] == "assistant" else "You"
+        st.markdown(f"**{name}:** {msg['content']}")
 
-    user_input = st.text_input("Ask me for book recommendations:")
+    user_input = st.text_input("Ask TaleGuide for book recommendations:")
 
     if user_input:
         st.session_state.chat_messages.append(
@@ -152,5 +153,5 @@ if st.session_state.chat_open:
             {"role": "assistant", "content": reply}
         )
 
-        st.markdown("### 🤖 BookBot")
+        st.markdown("### 🤖 TaleGuide")
         st.markdown(reply)
