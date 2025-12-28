@@ -156,3 +156,4 @@ if st.session_state.chat_open:
         with st.chat_message("assistant"):
             st.markdown(reply)
 
+
