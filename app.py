@@ -54,7 +54,7 @@ def recommend_by_genre(genre):
     return subset.sample(min(5, len(subset)), random_state=42)
 
 # --------------------------------------------------
-# 💬 Chatbot Logic (UNCHANGED)
+# 💬 Chatbot Logic
 # --------------------------------------------------
 def chatbot_reply(query):
     query = query.lower()
@@ -88,7 +88,7 @@ def chatbot_reply(query):
     return "🤖 Try asking: *Recommend fantasy books* or *Books by Colleen Hoover*"
 
 # --------------------------------------------------
-# 🧭 MAIN INTERFACE (UNCHANGED)
+# 🧭 MAIN INTERFACE
 # --------------------------------------------------
 st.title("📚 AI Book Recommendation System")
 
@@ -117,7 +117,7 @@ for i, genre in enumerate(genres):
             st.markdown(f"• *{row.Title}* — {row.Author} ⭐{row.Rating}")
 
 # --------------------------------------------------
-# 💬 CHAT BUBBLE (TOGGLE)
+# 💬 CHAT BUBBLE (SIDEBAR TOGGLE)
 # --------------------------------------------------
 if "chat_open" not in st.session_state:
     st.session_state.chat_open = False
@@ -130,17 +130,16 @@ with st.sidebar:
         st.session_state.chat_open = not st.session_state.chat_open
 
 # --------------------------------------------------
-# 🤖 CHAT WINDOW
+# 🤖 CHAT WINDOW (FIX 2 APPLIED)
 # --------------------------------------------------
 if st.session_state.chat_open:
     st.markdown("---")
     st.subheader("🤖 BookBot – Your Reading Assistant")
 
     for msg in st.session_state.chat_messages:
-        with st.chat_message(msg["role"]):
-            st.markdown(msg["content"])
+        st.markdown(f"**{msg['role'].capitalize()}:** {msg['content']}")
 
-    user_input = st.chat_input("Ask me for book recommendations...")
+    user_input = st.text_input("Ask me for book recommendations:")
 
     if user_input:
         st.session_state.chat_messages.append(
@@ -153,7 +152,5 @@ if st.session_state.chat_open:
             {"role": "assistant", "content": reply}
         )
 
-        with st.chat_message("assistant"):
-            st.markdown(reply)
-
-
+        st.markdown("### 🤖 BookBot")
+        st.markdown(reply)
