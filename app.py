@@ -155,3 +155,4 @@ if st.session_state.chat_open:
 
         st.markdown("### 🤖 TaleGuide")
         st.markdown(reply)
+
